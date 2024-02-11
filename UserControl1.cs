@@ -5,20 +5,18 @@ namespace ExerciseThreeComponents
 {
     public partial class UserControl1: UserControl
     {
-        public System.Timers.Timer timer = new System.Timers.Timer(1000);
-        private ushort _mm;
-        private ushort _ss;
+        private readonly System.Timers.Timer _timer = new System.Timers.Timer(1000);
 
-        public ushort SS => _ss;
+        public ushort SS { get; private set; }
 
-        public ushort MM => _mm;
+        public ushort MM { get; private set; }
 
         public UserControl1()
         {
             InitializeComponent();
-            timer.Elapsed += (timerSender, timerEvent) => label1.Invoke((MethodInvoker)delegate
+            _timer.Elapsed += (timerSender, timerEvent) => label1.Invoke((MethodInvoker)delegate
             {
-                send(timerSender, timerEvent);
+                Send(timerSender, timerEvent);
             });
         }
 
@@ -32,15 +30,15 @@ namespace ExerciseThreeComponents
 
         private void button1_Click(object sender, EventArgs e)
         {
-            string result = @"Play";
+            var result = @"Play";
             if (button1.Text == @"Play")
             {
-                timer.Enabled = true;
+                _timer.Enabled = true;
                 result = @"Pause";
             }
             else
             {
-                timer.Enabled = false;
+                _timer.Enabled = false;
             }
 
             this.button1.Text = result;
@@ -48,20 +46,20 @@ namespace ExerciseThreeComponents
             OnPlayClick(EventArgs.Empty);
         }
 
-        public void send(object source, System.Timers.ElapsedEventArgs e)
+        private void Send(object source, System.Timers.ElapsedEventArgs e)
         {
-            this.increaseMMSS();
+            this.IncreaseMMSS();
             label1.Text = $@"{MM:D2}:{SS:D2}"; 
         }
 
-        private void increaseMMSS()
+        private void IncreaseMMSS()
         {
-            _ss++;
-            if (_ss != 60) return;
+            SS++;
+            if (SS != 60) return;
             OnDesbordaTiempo(EventArgs.Empty);
             
-            _ss = 0;
-            _mm++;
+            SS = 0;
+            MM++;
         }
 
         private void OnDesbordaTiempo(EventArgs empty)
